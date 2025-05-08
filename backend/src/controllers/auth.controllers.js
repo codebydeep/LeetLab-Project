@@ -164,7 +164,7 @@ const logout = async (req, res) => {
     }
 }
 
-// check middleware -
+// check controller -
 const check = async (req, res) => {
     try {
         return res.status(200).json({
