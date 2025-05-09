@@ -1,8 +1,9 @@
 import {db} from "../libs/db.js"
+import {getJudge0LanguageId, pollBatchResults, submitBatch} from "../libs/judge0.libs.js"
 
+// createProblem controller -
 const createProblem = async (req, res) => {
 
-    // going to get all the data from the request body -
     const {title, description, difficulty, tags, examples, constraints, testcases, codeSnippets, referenceSolution} = req.body
 
     if(req.user.role !== "ADMIN"){
@@ -36,42 +37,112 @@ const createProblem = async (req, res) => {
 
 
             for(let i=0; i < results.length; i++){
+                
                 const result = results[i]
+                console.log("Results-----", result);
 
+                // console.log(
+                    // `Testcase ${i+1} and language ${language} -----result ${JSON.stringify(result.status.description)} `
+                // );
+                
                 if(result.status.id !== 3){
                     return res.status(400).json({
-                        error: `Testcase ${i+1} failed for langauge ${langauge}`,
+                        error: `Testcase ${i+1} failed for langauge ${language}`,
                     })
-                }
+                };
             }
 
-
-            const newProblem = await db.problem.create({
-                data: {
-                    title, 
-                    description,
-                    difficulty, 
-                    tags, 
-                    examples, 
-                    constraints, 
-                    testcases, 
-                    codeSnippets, 
-                    referenceSolution, 
-                    userId: req.user.id
-                }
-            })
         }
+        const newProblem = await db.problem.create({
+            data: {
+                title, 
+                description,
+                difficulty, 
+                tags, 
+                examples, 
+                constraints, 
+                testcases, 
+                codeSnippets, 
+                referenceSolution, 
+                userId: req.user.id,
+            }
+        })
+            
 
-        return res.status(201).json(newProblem);
+        return res.status(201).json({
+            success: true,
+            message: "Problem Created Successfully",
+            problem: newProblem,
+        });
 
     } catch (error) {
-        
+        console.error(error)
+        return res.status(500).json({
+            error: "Error in Creating Problem"
+        })
     }
 }
 
-const getAllProblems = async (req, res) => {}
+// getAllProblems controller - 
+const getAllProblems = async (req, res) => {
+    try {
+        const {problems} = await db.problem.findMany();
 
-const getProblemById = async (req, res) => {}
+        if(!problems){
+            return res.status(404).json({
+                success: false,
+                error: "No Problems found"
+            })
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Problems Fetched Successfully",
+            problems,
+        })
+
+    } catch (error) {
+        console.log(error);
+        
+        return res.status(500).json({
+                error: "Error while Fetching Problems"
+        })
+    };
+};
+
+
+// getProblemsById controller -
+const getProblemById = async (req, res) => {
+    const {id} = req.params;
+    
+    try {
+        const problem = await db.problem.findUnique({
+            where: {
+                id,
+            }
+        })
+
+        if(!problem){
+            return res.status(404).json({
+                error: "Problem not found"
+            })
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Problem Fetched Successfully",
+            problem,
+        })
+
+    } 
+    catch (error) {
+        console.log(error);
+        
+        return res.status(500).json({
+                error: "Error while Fetching Problem by Id"
+        })
+    }
+}
 
 const updateProblem = async (req, res) => {}
 

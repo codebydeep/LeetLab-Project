@@ -12,6 +12,7 @@ const getJudge0LanguageId = (langauge) => {
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+
 // Polling -
 const pollBatchResults = async (tokens) => {
     while(true){
@@ -41,4 +42,4 @@ const submitBatch = async (submissions) => {
     return data;
 }
 
-export {getJudge0LanguageId, submitBatch}
+export {getJudge0LanguageId, pollBatchResults, submitBatch}
