@@ -144,10 +144,101 @@ const getProblemById = async (req, res) => {
     }
 }
 
-const updateProblem = async (req, res) => {}
 
-const deleteProblem = async (req, res) => {}
+// update Problem controller -
+const updateProblem = async (req, res) => {
+    const {problemId} = req.params;
 
-const getAllProblemsSolvedByUser = async (req, res) => {}
+    const {
+        title,
+        description,
+        difficulty,
+        tags,
+        examples,
+        constraints,
+        testcases,
+        codeSnippets,
+        referenceSolution
+    } = req.body
+
+    const problem = await db.problem.findFirst({
+        where: {
+            id: problemId,
+        }
+    })
+
+    if(!problem){
+        return res.status(404).json({
+            success: false,
+            message: "No Problem Found"
+        })
+    }
+    
+    try {
+        const updatedProblem = await db.problem.update({
+            where: {
+                id: problemId,
+            },
+            data: {
+                title,
+                description,
+                difficulty,
+                tags,
+                examples,
+                constraints,
+                testcases,
+                codeSnippets,
+                referenceSolution
+            }
+        })
+
+        return res.status(200).json({
+            success: true,
+            message: "Problem Update Successfully"
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Error in Updating Problem"
+        })
+    }
+}
+
+
+// delete Problem controller -
+const deleteProblem = async (req, res) => {
+    const {id} = req.params
+
+    try {
+        const problem = await db.problem.findUnique({
+            where: {id}
+        });
+        
+        if(!problem){
+            return res.status(404).json({error: "Problem Not Found"});
+        }
+
+        await db.problem.delete({where: {id}});
+        
+        res.status(200).json(200).json({
+            success: true,
+            message: "Problem deleted Successfully"
+        });
+
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({
+                error: "Error while deleting the Problem"
+            })
+        }
+}
+
+
+// getAllProblemsSolvedByUser - 
+const getAllProblemsSolvedByUser = async (req, res) => {
+    
+}
+
 
 export {createProblem, getAllProblems, getProblemById, updateProblem, deleteProblem, getAllProblemsSolvedByUser}

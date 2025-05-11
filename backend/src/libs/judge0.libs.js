@@ -1,13 +1,13 @@
 import axios from "axios"
 
-const getJudge0LanguageId = (langauge) => {
+const getJudge0LanguageId = (language) => {
     const languageMap = {
         "PYTHON": 71,
         "JAVA": 62,
         "JAVASCRIPT": 63,
     }
 
-    return languageMap[langauge.toUpperCase()]
+    return languageMap[language.toUpperCase()]
 }
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
