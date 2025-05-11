@@ -86,7 +86,7 @@ const createProblem = async (req, res) => {
 // getAllProblems controller - 
 const getAllProblems = async (req, res) => {
     try {
-        const {problems} = await db.problem.findMany();
+        const problems = await db.problem.findMany();
 
         if(!problems){
             return res.status(404).json({
@@ -95,7 +95,7 @@ const getAllProblems = async (req, res) => {
             })
         }
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: "Problems Fetched Successfully",
             problems,
