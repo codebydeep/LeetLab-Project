@@ -37,6 +37,18 @@ const executeCode = async (req, res) => {
 
     console.log(`Result----------`);
     console.log(results);
+
+    // Analyze Test Case results -
+    let allPassed = true
+    const detailedResults = results.map((result, i) => {
+        const stdout = result.stdout?.trim()
+        const expected_output = expected_outputs[i]?.trim()
+        const passed = stdout === expected_output;
+        
+        if(!passed){
+            allPassed = false
+        }
+    })
     
     res.status(200).json({
         message: "Code Executed!"

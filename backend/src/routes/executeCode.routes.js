@@ -4,6 +4,6 @@ import executeCode from "../controllers/executeCode.controllers.js"
 
 const executionRoute = express.Router()
 
-executionRoute.post("/execute-code", authMiddleware, executeCode)
+executionRoute.post("/", authMiddleware, executeCode)
 
 export default executionRoute
